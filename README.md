@@ -1,38 +1,38 @@
 # Before TCP — The Night the World Learned to Talk
 
-An interactive, narrative field guide to the ideas that made the Internet and the early World Wide Web possible.
+An interactive, narrative field guide to the infrastructure that made the Internet and the early World Wide Web possible.
 
-The site is intentionally built with plain HTML, CSS, and JavaScript so it can be hosted directly on GitHub Pages without a framework, build step, backend, or database.
+The project is intentionally built with plain HTML, CSS, and JavaScript so it can be hosted directly on GitHub Pages without a framework, build step, backend, or database.
 
 ## What the project teaches
 
-The homepage tells the broader story of the early Web and keeps the simulation separate from that narrative.
+The homepage tells the broader story and keeps the build simulation separate from that narrative.
 
-The dedicated **TCP Lab** (`tcp.html`) is intentionally limited to one protocol. It walks a learner through:
+The dedicated **Infrastructure Lab** (`infrastructure.html`) is a step-by-step build of the foundation beneath TCP. It does not simulate individual TCP segments. The learner builds, in order:
 
-1. Two TCP endpoints
-2. The client’s SYN
-3. The server’s SYN + ACK
-4. The client’s final ACK
-5. A data segment with sequence and acknowledgement numbers
-6. A simulated lost segment and retransmission
-7. A clean FIN/ACK close
+1. A direct physical link
+2. A circuit switch
+3. Packet-switched nodes
+4. IP addressing and routing
+5. Network interconnection and peering
+6. Global physical reach: fiber, radio, satellites, and last-mile access
+7. Operations, standards, policy, and maintenance
+8. The protocol stack that TCP can use
 
-The dedicated lab does not mix in DNS, IP routing, HTTP, or HTML.
+The final step makes the distinction explicit: TCP is a protocol that rides on infrastructure; it does not create the cables, routers, addresses, or agreements beneath it.
 
-The surrounding story explains the layers that came before and after TCP:
+The homepage also explains the early Web context:
 
 - Dedicated telephone and telegraph circuits
 - Packet switching and ARPANET
 - IP addressing and routing
-- TCP reliability
 - DNS naming
 - URLs, HTTP, and HTML
 - Mosaic, Netscape Navigator, and early JavaScript
 
 ## Storytelling
 
-The site includes narrated reconstruction snippets and small, clearly labeled historical notes. The narrative is educational storytelling rather than invented dialogue. The connection lab uses a fictional `first.example` destination and never makes a real network request.
+The site includes narrated reconstruction snippets and clearly labeled historical notes. The narrative is educational storytelling rather than invented dialogue. The infrastructure build is a local visual model and never opens real network connections.
 
 ## Run locally
 
@@ -42,7 +42,7 @@ From this directory:
 python3 -m http.server 8000
 ```
 
-Then open [http://localhost:8000](http://localhost:8000).
+Then open [http://localhost:8000](http://localhost:8000) or [the infrastructure lab](http://localhost:8000/infrastructure.html).
 
 ## Publish with GitHub Pages
 
@@ -54,22 +54,25 @@ Then open [http://localhost:8000](http://localhost:8000).
 
 ## Historical framing
 
-TCP did not create the World Wide Web. The short version is:
+TCP did not create the World Wide Web or the physical Internet. The short version is:
 
-- TCP/IP was developed through work led by Vint Cerf and Bob Kahn in the 1970s.
+- Dedicated telephone and telegraph circuits established the idea of a managed connection.
+- Packet switching and ARPANET demonstrated a different way to share network capacity.
+- The Internet Protocol supplied a common addressing and routing language.
+- Network interconnection made independently operated networks work as one Internet.
+- TCP added reliability on top of a best-effort packet network.
 - Tim Berners-Lee created the Web's core ideas at CERN around 1989–1991.
 - NCSA Mosaic helped popularize the Web in 1993.
 - Netscape Navigator made the Web broadly accessible starting in 1994.
-- JavaScript was created at Netscape by Brendan Eich in 1995.
-- Netscape contributors also developed the HTTP cookie mechanism in the 1990s.
 
-The site links to primary and foundational sources in the **Read the original blueprints** section.
+The site links to primary and foundational sources in the homepage's **Read the original blueprints** section.
 
 ## Files
 
-- `index.html` — narrative homepage and simulation gateway
-- `tcp.html` — dedicated, step-by-step TCP-only simulation
+- `index.html` — narrative homepage and infrastructure gateway
+- `infrastructure.html` — dedicated, step-by-step network-infrastructure build
 - `styles.css` — shared visual system and homepage design
-- `tcp.css` — focused TCP-lab layout and responsive styles
+- `infrastructure.css` — focused infrastructure-lab layout and responsive styles
 - `app.js` — homepage timeline, packet workshop, and Netscape demo interactions
-- `tcp.js` — TCP stepper, handshake animation, recovery, and connection close
+- `infrastructure.js` — infrastructure stages, build visualizer, and step navigation
+- `tcp.html` — legacy redirect to the infrastructure lab
