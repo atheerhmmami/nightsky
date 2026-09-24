@@ -1,0 +1,1744 @@
+/*
+ * Cody-inspired visual system.
+ * Warm paper, monospace type, thin rules, and small purple actions.
+ * The content and interaction model stay intact; this layer changes the
+ * visual language so the site reads like a technical notebook, not a dashboard.
+ */
+
+:root {
+  --bg: #f2eee7;
+  --bg-soft: #e9e4db;
+  --panel: #e9e4db;
+  --panel-deep: #e9e4db;
+  --line: #e4dfd5;
+  --line-bright: #d8d2c7;
+  --ink: #4d4a44;
+  --muted: #69655f;
+  --faint: #87847d;
+  --cyan: #8b83b5;
+  --cyan-bright: #6e6694;
+  --amber: #c4845c;
+  --coral: #c46a60;
+  --lavender: #8b83b5;
+  --max: 65ch;
+  --sans: ui-monospace, Menlo, "SF Mono", Consolas, "Liberation Mono", monospace;
+  --serif: ui-monospace, Menlo, "SF Mono", Consolas, "Liberation Mono", monospace;
+  --mono: ui-monospace, Menlo, "SF Mono", Consolas, "Liberation Mono", monospace;
+}
+
+html {
+  background: var(--bg);
+  color: var(--ink);
+}
+
+body {
+  max-width: 72ch;
+  margin: 0 auto;
+  padding: 0 2ch 4em;
+  overflow-x: hidden;
+  color: var(--ink);
+  background: var(--bg);
+  font-family: var(--sans);
+  font-size: 15px;
+  line-height: 1.6;
+}
+
+body::before,
+body::after,
+.noise {
+  display: none;
+}
+
+::selection {
+  color: #f2eee7;
+  background: var(--lavender);
+}
+
+a {
+  color: var(--lavender);
+  text-decoration: none;
+  border-bottom: 1px solid #d8d4e2;
+}
+
+a:hover,
+a:focus-visible {
+  color: #6e6694;
+  border-bottom-color: var(--lavender);
+}
+
+button,
+input {
+  font: inherit;
+}
+
+button {
+  cursor: pointer;
+}
+
+button:focus-visible,
+a:focus-visible,
+input:focus-visible {
+  outline: 2px solid var(--lavender);
+  outline-offset: 3px;
+}
+
+.topbar,
+.infrastructure-topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  max-width: none;
+  min-height: 0;
+  height: auto;
+  gap: 1.5ch;
+  padding: 1.2em 0 0;
+  border: 0;
+  color: var(--faint);
+  font-size: 0.87em;
+}
+
+.brand,
+.footer-brand {
+  color: var(--faint);
+  font-family: var(--mono);
+  font-size: 0.95em;
+  letter-spacing: 0;
+}
+
+.brand:hover,
+.brand:focus-visible {
+  color: var(--lavender);
+  border: 0;
+}
+
+.brand-mark {
+  display: none;
+}
+
+.brand-slash,
+.brand-muted,
+.tcp-page .brand-muted,
+.infrastructure-page .brand-muted {
+  color: var(--faint);
+}
+
+.topnav,
+.infra-scope-pill {
+  display: flex;
+  align-items: center;
+  gap: 2ch;
+  margin-left: auto;
+  color: var(--faint);
+  font-family: var(--mono);
+  font-size: 0.95em;
+}
+
+.topnav a,
+.infra-scope-pill,
+.infra-back-link,
+.tcp-back-link,
+.topnav-cta {
+  color: var(--faint);
+  border: 0;
+}
+
+.topnav a:hover,
+.topnav a:focus-visible,
+.infra-back-link:hover,
+.infra-back-link:focus-visible,
+.tcp-back-link:hover,
+.tcp-back-link:focus-visible,
+.topnav-cta:hover,
+.topnav-cta:focus-visible {
+  color: var(--lavender);
+  border: 0;
+}
+
+.topnav-cta,
+.infra-back-link,
+.tcp-back-link {
+  margin-left: 0;
+  font-family: var(--mono);
+  font-size: 0.95em;
+  letter-spacing: 0;
+  text-transform: lowercase;
+}
+
+.topnav-cta span,
+.infra-back-link span,
+.tcp-back-link span {
+  color: var(--lavender);
+  font-size: 1em;
+}
+
+.section-pad {
+  max-width: none;
+  padding: 3em 0;
+}
+
+.eyebrow,
+.infrastructure-hero-copy .eyebrow,
+.infrastructure-section-heading .eyebrow,
+.infrastructure-recap .eyebrow,
+.workspace-kicker,
+.infra-workspace-heading .workspace-kicker,
+.infrastructure-scope-note span,
+.infra-scope-pill,
+.step-explainer-kicker,
+.infra-solves span,
+.infra-limits span,
+.build-canvas-label,
+.build-canvas-footer,
+.infrastructure-stepper,
+.infrastructure-step,
+.infrastructure-stepper-heading,
+.infrastructure-footer,
+.infrastructure-action-panel,
+.infrastructure-action-context,
+.infrastructure-log-section,
+.infrastructure-explanation,
+.infrastructure-hero,
+.infrastructure-scope-note,
+.infrastructure-action-panel,
+.infrastructure-lab-shell {
+  font-family: var(--mono);
+}
+
+.eyebrow {
+  display: block;
+  margin: 0 0 1.1em;
+  color: var(--lavender);
+  font-size: 0.87em;
+  letter-spacing: 0;
+  line-height: 1.5;
+  text-transform: lowercase;
+}
+
+.eyebrow-dot,
+.signal-dot {
+  display: inline-block;
+  width: 0.5em;
+  height: 0.5em;
+  margin-right: 0.7em;
+  border-radius: 0;
+  background: var(--lavender);
+  box-shadow: none;
+}
+
+.eyebrow-dot {
+  vertical-align: 0.04em;
+}
+
+/* Homepage: a compact, centered technical introduction. */
+.hero {
+  display: block;
+  min-height: 0;
+  padding: 3.4em 0 1.6em;
+  text-align: center;
+}
+
+.hero-copy {
+  max-width: none;
+}
+
+.hero h1 {
+  max-width: none;
+  margin: 0;
+  color: var(--ink);
+  font-family: var(--mono);
+  font-size: 2.9em;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  line-height: 1;
+}
+
+.hero h1::after {
+  display: inline-block;
+  width: 0.5em;
+  height: 0.9em;
+  margin-left: 0.12em;
+  vertical-align: -0.08em;
+  background: var(--lavender);
+  content: "";
+  animation: cody-blink 1.1s steps(1) infinite;
+}
+
+@keyframes cody-blink {
+  50% { opacity: 0; }
+}
+
+.hero h1 em {
+  color: var(--ink);
+  font-family: var(--mono);
+  font-style: normal;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+}
+
+.hero-lede {
+  max-width: 60ch;
+  margin: 1.2em auto 0;
+  color: var(--faint);
+  font-family: var(--mono);
+  font-size: 1em;
+  line-height: 1.6;
+  white-space: normal;
+}
+
+.hero-lede strong {
+  color: var(--ink);
+  font-weight: 600;
+}
+
+.hero-actions {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 2ch;
+  margin-top: 1.6em;
+}
+
+.button {
+  display: inline-block;
+  min-height: 0;
+  border: 0;
+  border-radius: 5px;
+  padding: 0.1em 1.6ch;
+  color: #fff;
+  background: var(--lavender);
+  box-shadow: none;
+  font-family: var(--mono);
+  font-size: 1.1em;
+  font-weight: 600;
+  line-height: 1.8;
+  text-transform: lowercase;
+  transition: background 160ms ease, transform 160ms ease;
+}
+
+.button:hover,
+.button:focus-visible {
+  color: #fff;
+  background: #6e6694;
+  box-shadow: none;
+  transform: translateY(-1px);
+}
+
+.button span {
+  color: inherit;
+}
+
+.text-link {
+  color: var(--faint);
+  font-family: var(--mono);
+  font-size: 0.87em;
+  letter-spacing: 0;
+  text-transform: lowercase;
+}
+
+.text-link span {
+  color: var(--lavender);
+}
+
+.hero-meta {
+  display: flex;
+  justify-content: center;
+  max-width: 62ch;
+  margin: 2.5em auto 0;
+  color: var(--faint);
+  font-family: var(--mono);
+  font-size: 0.8em;
+  line-height: 1.6;
+}
+
+.hero-meta b {
+  color: var(--lavender);
+  font-weight: 400;
+}
+
+.hero-visual {
+  display: none;
+}
+
+.story-strip {
+  display: block;
+  padding: 1.4em 0;
+  border-color: var(--line);
+}
+
+.strip-label {
+  display: block;
+  margin-bottom: 0.8em;
+  color: var(--lavender);
+  font-family: var(--mono);
+  font-size: 0.87em;
+  text-transform: lowercase;
+}
+
+.story-strip p {
+  max-width: 62ch;
+  margin: 0;
+  color: var(--muted);
+  font-family: var(--mono);
+  font-size: 1em;
+  font-style: normal;
+  line-height: 1.6;
+  white-space: normal;
+}
+
+.strip-mark {
+  display: none;
+}
+
+.section-heading {
+  display: block;
+  margin-bottom: 1.6em;
+}
+
+.section-heading h2,
+.gateway-copy h2,
+.tcp-section-heading h2,
+.infrastructure-recap h2,
+.infra-section-heading h2 {
+  max-width: none;
+  margin: 0 0 0.9em;
+  color: var(--ink);
+  font-family: var(--mono);
+  font-size: 1.3em;
+  font-weight: 600;
+  letter-spacing: 0;
+  line-height: 1.3;
+}
+
+.section-intro,
+.gateway-copy > p:not(.eyebrow),
+.infrastructure-hero-copy > p:not(.eyebrow),
+.infrastructure-section-heading > p,
+.infrastructure-recap-content > p:not(.eyebrow) {
+  max-width: 65ch;
+  margin: 0;
+  color: var(--muted);
+  font-family: var(--mono);
+  font-size: 1em;
+  line-height: 1.6;
+  white-space: normal;
+}
+
+/* The historical story: one readable column, with rules instead of panels. */
+.journey-board,
+.analogy-panel,
+.packet-workshop .workshop-shell,
+.simulation-gateway,
+.retro-browser,
+.takeaway,
+.source-card,
+.tcp-lab-shell,
+.infrastructure-lab-shell,
+.field-note-grid,
+.tcp-log-shell {
+  border-color: var(--line);
+  box-shadow: none;
+}
+
+.journey-board {
+  display: block;
+}
+
+.journey-rail {
+  display: flex;
+  flex-wrap: wrap;
+  padding: 0;
+  border-right: 0;
+  border-bottom: 1px solid var(--line);
+}
+
+.rail-line {
+  display: none;
+}
+
+.journey-step {
+  display: flex;
+  flex: 1 1 30%;
+  align-items: center;
+  min-height: 3.4em;
+  border-right: 1px solid var(--line);
+  padding: 0 0.8em;
+  color: var(--faint);
+  background: transparent;
+  font-family: var(--mono);
+  font-size: 0.8em;
+}
+
+.journey-step:last-child {
+  border-right: 0;
+}
+
+.journey-step.is-active {
+  color: var(--ink);
+  background: var(--bg-soft);
+}
+
+.step-number,
+.tcp-step > span,
+.infrastructure-step > span {
+  width: 1.5em;
+  height: 1.5em;
+  border-color: var(--line-bright);
+  color: var(--faint);
+  background: transparent;
+  font-size: 0.75em;
+  box-shadow: none;
+}
+
+.journey-step.is-active .step-number,
+.tcp-step.is-current > span,
+.infrastructure-step.is-current > span {
+  border-color: var(--lavender);
+  color: #fff;
+  background: var(--lavender);
+  box-shadow: none;
+}
+
+.step-title,
+.step-era {
+  font-family: var(--mono);
+  font-size: 0.95em;
+}
+
+.journey-step.is-active .step-era {
+  color: var(--lavender);
+}
+
+.journey-detail {
+  min-height: 0;
+  padding: 1.4em 1em 1.2em;
+  background: var(--bg-soft);
+}
+
+.detail-index,
+.detail-footer,
+.analogy-labels,
+.lesson-number,
+.source-type,
+.source-card > span:last-child,
+.workshop-stage-top,
+.workshop-steps,
+.workshop-story,
+.story-panel .eyebrow,
+.navigator-note,
+.takeaway-chain,
+.source-footnote,
+.footer,
+.infrastructure-footer {
+  font-family: var(--mono);
+}
+
+.detail-icon {
+  width: 2.4em;
+  height: 2.4em;
+  margin: 1.5em 0 0.8em;
+  border-color: var(--lavender);
+  color: var(--lavender);
+  font-family: var(--mono);
+  font-size: 1em;
+  box-shadow: none;
+}
+
+.journey-detail h3 {
+  color: var(--ink);
+  font-family: var(--mono);
+  font-size: 1.15em;
+  font-weight: 600;
+  letter-spacing: 0;
+  line-height: 1.3;
+}
+
+.journey-detail > p,
+.lesson-card p,
+.field-note p,
+.analogy-copy p:not(.eyebrow),
+.build-hint,
+.tcp-section-heading > p,
+.infrastructure-section-heading > p {
+  color: var(--muted);
+  font-family: var(--mono);
+  font-size: 0.95em;
+  line-height: 1.6;
+  white-space: normal;
+}
+
+.detail-answer {
+  padding-top: 1.2em;
+}
+
+.answer-label,
+.detail-footer,
+.navigator-note,
+.tcp-footer,
+.infrastructure-footer {
+  color: var(--faint);
+  font-size: 0.8em;
+  letter-spacing: 0;
+  text-transform: lowercase;
+}
+
+.detail-answer strong {
+  color: var(--ink);
+  font-family: var(--mono);
+  font-size: 0.95em;
+}
+
+.analogy-panel {
+  display: block;
+  margin-top: 1.5em;
+  padding: 1.2em 0;
+  background: transparent;
+}
+
+.analogy-copy h3,
+.story-panel h3,
+.tcp-recap h2,
+.infrastructure-recap h2 {
+  color: var(--ink);
+  font-family: var(--mono);
+  font-size: 1.15em;
+  font-weight: 600;
+  letter-spacing: 0;
+  line-height: 1.3;
+}
+
+.analogy-visual {
+  margin-top: 1.4em;
+}
+
+.train-car,
+.envelope,
+.packet-piece,
+.workshop-button,
+.workshop-stage,
+.workshop-message,
+.workshop-story p {
+  font-family: var(--mono);
+}
+
+.envelope {
+  border-color: var(--lavender);
+  color: var(--lavender);
+  background: transparent;
+  box-shadow: none;
+}
+
+.train-car {
+  color: #fff;
+  background: var(--lavender);
+}
+
+.analogy-labels {
+  color: var(--faint);
+  font-size: 0.75em;
+}
+
+.analogy-labels span:last-child {
+  color: var(--lavender);
+}
+
+.lesson-grid {
+  display: block;
+  border: 0;
+  background: transparent;
+}
+
+.lesson-card,
+.lesson-card-highlight {
+  min-height: 0;
+  padding: 1em 0;
+  border-top: 1px solid var(--line);
+  background: transparent;
+}
+
+.lesson-card h3 {
+  margin: 0.5em 0 0.25em;
+  color: var(--ink);
+  font-family: var(--mono);
+  font-size: 1em;
+  font-weight: 600;
+  letter-spacing: 0;
+}
+
+.lesson-card p {
+  margin: 0;
+}
+
+.lesson-number {
+  color: var(--lavender);
+}
+
+.packet-workshop,
+.simulation-gateway,
+.browser-section,
+.takeaway,
+.sources,
+.tcp-log-section,
+.tcp-recap,
+.infrastructure-log-section,
+.infrastructure-recap {
+  padding-top: 3em;
+  padding-bottom: 3em;
+  border-color: var(--line);
+}
+
+.workshop-shell,
+.simulation-gateway,
+.gateway-card,
+.workshop-stage,
+.tcp-lab-shell,
+.infrastructure-lab-shell {
+  background: var(--bg-soft);
+}
+
+.workshop-controls,
+.tcp-stepper,
+.infrastructure-stepper,
+.connection-log-panel,
+.tcp-log,
+.infrastructure-footer {
+  background: transparent;
+}
+
+.workshop-controls,
+.tcp-stepper,
+.infrastructure-stepper {
+  border-color: var(--line);
+}
+
+.control-label,
+.toggle-control,
+.range-row output,
+.workshop-hint,
+.infrastructure-stepper-note,
+.infrastructure-action-context p,
+.infrastructure-action-context strong,
+.infrastructure-hero-diagram,
+.infrastructure-hero-caption {
+  font-family: var(--mono);
+}
+
+.range-row output,
+.workshop-stage-top strong,
+.workshop-steps,
+.tcp-log-toolbar b,
+.infrastructure-stepper-heading b,
+.infrastructure-workspace .layer-count strong,
+.build-canvas-label b,
+.build-canvas-footer strong {
+  color: var(--lavender);
+  font-family: var(--mono);
+  font-weight: 400;
+}
+
+.workshop-button,
+.tcp-action-panel .button,
+.infrastructure-action-panel .button,
+.tcp-recap-chain,
+.infrastructure-stack,
+.takeaway-chain {
+  border-radius: 5px;
+  box-shadow: none;
+}
+
+.workshop-stage,
+.build-canvas,
+.tcp-wire-board {
+  border-color: var(--line);
+  background: var(--bg-soft);
+  background-image: none;
+}
+
+.workshop-stage-top,
+.workshop-stage-top strong,
+.workshop-steps,
+.workshop-message,
+.workshop-story p {
+  color: var(--muted);
+}
+
+.workshop-story p {
+  font-size: 1em;
+  font-style: normal;
+  line-height: 1.6;
+}
+
+.packet-piece {
+  border-color: var(--line-bright);
+  color: var(--muted);
+  background: var(--bg);
+  box-shadow: none;
+}
+
+.packet-piece b {
+  color: var(--lavender);
+}
+
+.packet-piece.is-sent,
+.packet-piece.is-lost,
+.packet-piece.is-repaired {
+  transform: none;
+  box-shadow: none;
+}
+
+.packet-piece.is-sent { border-color: var(--lavender); color: var(--lavender); }
+.packet-piece.is-lost { border-color: var(--coral); color: var(--coral); }
+.packet-piece.is-repaired { border-color: var(--amber); color: var(--amber); }
+
+.simulation-gateway {
+  display: block;
+}
+
+.gateway-copy > p:not(.eyebrow) {
+  margin: 0 0 1.4em;
+}
+
+.gateway-card {
+  margin-top: 1.8em;
+  padding: 0;
+  background: var(--bg-soft);
+}
+
+.gateway-card::before,
+.gateway-card::after,
+.gateway-card-top,
+.gateway-mini-wire,
+.gateway-steps-preview,
+.gateway-card > p {
+  font-family: var(--mono);
+}
+
+.gateway-card::before {
+  display: none;
+}
+
+.gateway-card-top {
+  padding: 0.7em 1em;
+  border-color: var(--line);
+}
+
+.gateway-card-top b {
+  color: var(--lavender);
+}
+
+.gateway-mini-wire {
+  padding: 2.2em 1em 1.5em;
+}
+
+.gateway-mini-wire i {
+  background: var(--line-bright);
+  box-shadow: none;
+}
+
+.gateway-mini-wire i::after {
+  border-color: var(--lavender);
+}
+
+.gateway-mini-wire strong {
+  color: #fff;
+  background: var(--lavender);
+  box-shadow: none;
+}
+
+.gateway-steps-preview {
+  grid-template-columns: repeat(4, 1fr);
+  border-color: var(--line);
+  background: var(--line);
+}
+
+.gateway-steps-preview span {
+  min-height: 3.2em;
+  color: var(--faint);
+  background: var(--bg-soft);
+}
+
+.gateway-steps-preview b {
+  color: var(--lavender);
+}
+
+.gateway-card > p {
+  margin: 1em;
+  color: var(--muted);
+  font-style: normal;
+}
+
+/* The old browser chapter becomes a plain terminal-like example. */
+.browser-story-grid {
+  display: block;
+}
+
+.retro-browser {
+  margin-bottom: 2.2em;
+  border-color: var(--line-bright);
+  background: var(--bg-soft);
+  box-shadow: none;
+  transform: none;
+}
+
+.retro-browser::after {
+  display: none;
+}
+
+.browser-titlebar {
+  min-height: 0;
+  padding: 0.6em 1em;
+  background: var(--lavender);
+}
+
+.browser-brand,
+.toolbar-label,
+.browser-location,
+.browser-statusbar,
+.page-kicker,
+.script-output {
+  font-family: var(--mono);
+}
+
+.browser-toolbar {
+  padding: 0.6em 1em;
+  border-color: var(--line-bright);
+  background: var(--bg-soft);
+}
+
+.browser-location {
+  color: var(--muted);
+  border-color: var(--line);
+  background: var(--bg);
+}
+
+.browser-content {
+  min-height: 0;
+  padding: 2.2em 1.5em;
+  background: var(--bg);
+}
+
+.browser-content h3,
+.page-copy,
+.page-link,
+.story-panel > p:not(.eyebrow) {
+  color: var(--muted);
+  font-family: var(--mono);
+}
+
+.browser-content h3 {
+  color: var(--ink);
+  font-family: var(--mono);
+  font-size: 2.2em;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+}
+
+.page-copy,
+.page-link,
+.story-panel > p:not(.eyebrow) {
+  font-size: 0.95em;
+  line-height: 1.6;
+}
+
+.page-rule {
+  background: var(--line);
+}
+
+.retro-button {
+  color: #fff;
+  background: var(--lavender);
+  box-shadow: none;
+}
+
+.retro-button:hover,
+.retro-button:focus-visible {
+  background: #6e6694;
+}
+
+.pull-quote {
+  border-color: var(--line);
+}
+
+.pull-quote p {
+  color: var(--lavender);
+  font-family: var(--mono);
+  font-size: 1em;
+  font-style: normal;
+}
+
+.pull-quote span {
+  color: var(--lavender);
+}
+
+.story-panel {
+  padding-left: 1em;
+  border-color: var(--line);
+}
+
+.story-panel-mark {
+  color: var(--lavender);
+  background: var(--bg);
+}
+
+.navigator-note {
+  color: var(--faint);
+}
+
+.takeaway {
+  position: relative;
+  overflow: visible;
+  text-align: center;
+}
+
+.takeaway h2 {
+  color: var(--ink);
+  font-family: var(--mono);
+  font-size: 1.3em;
+  font-weight: 600;
+  letter-spacing: 0;
+  line-height: 1.3;
+}
+
+.takeaway-content > p:not(.eyebrow) {
+  max-width: 62ch;
+  margin: 1em auto 0;
+  color: var(--muted);
+  font-family: var(--mono);
+  font-size: 1em;
+  line-height: 1.6;
+}
+
+.takeaway-glow,
+.infrastructure-recap-glow {
+  display: none;
+}
+
+.takeaway-chain,
+.infrastructure-stack {
+  color: var(--lavender);
+  font-size: 0.8em;
+}
+
+.takeaway-chain i,
+.infrastructure-stack i {
+  color: var(--faint);
+}
+
+.source-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1px;
+  border-color: var(--line);
+  background: var(--line);
+}
+
+.source-card {
+  min-height: 8em;
+  padding: 1em;
+  background: var(--bg);
+}
+
+.source-card:hover,
+.source-card:focus-visible {
+  background: var(--bg-soft);
+  transform: none;
+}
+
+.source-type,
+.source-card > span:last-child {
+  color: var(--lavender);
+  font-size: 0.8em;
+}
+
+.source-card strong {
+  margin-top: 1.5em;
+  color: var(--ink);
+  font-family: var(--mono);
+  font-size: 1em;
+  font-weight: 600;
+}
+
+/* Infrastructure page: keep the build, lose the dashboard chrome. */
+.infrastructure-hero,
+.tcp-hero {
+  display: block;
+  min-height: 0;
+  padding: 3.4em 0 1.6em;
+  text-align: center;
+}
+
+.infrastructure-hero-copy,
+.tcp-hero-copy {
+  max-width: none;
+}
+
+.infrastructure-hero-copy h1,
+.tcp-hero-copy h1 {
+  max-width: none;
+  margin: 0;
+  color: var(--ink);
+  font-family: var(--mono);
+  font-size: 2.9em;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  line-height: 1;
+}
+
+.infrastructure-hero-copy h1 em,
+.tcp-hero-copy h1 em {
+  color: var(--ink);
+  font-family: var(--mono);
+  font-style: normal;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+}
+
+.infrastructure-hero-copy > p:not(.eyebrow),
+.tcp-hero-copy > p:not(.eyebrow) {
+  max-width: 60ch;
+  margin: 1.2em auto 0;
+}
+
+.infrastructure-scope-note,
+.tcp-scope-note {
+  max-width: 60ch;
+  margin: 1.4em auto 0;
+  padding: 0.7em 1em;
+  border-left-color: var(--lavender);
+  background: var(--bg-soft);
+}
+
+.infrastructure-scope-note span,
+.tcp-scope-note span {
+  color: var(--lavender);
+}
+
+.infrastructure-scope-note p,
+.tcp-scope-note p {
+  color: var(--muted);
+}
+
+.infrastructure-hero-diagram,
+.tcp-hero-diagram {
+  display: none;
+}
+
+.infrastructure-lab-shell,
+.tcp-lab-shell {
+  display: block;
+  min-height: 0;
+  border-color: var(--line);
+  background: var(--bg-soft);
+}
+
+.infrastructure-stepper,
+.tcp-stepper {
+  border-right: 0;
+  border-bottom: 1px solid var(--line);
+  background: transparent;
+}
+
+.infra-stepper-heading,
+.stepper-heading {
+  padding: 0.7em 1em;
+  border-color: var(--line);
+  color: var(--faint);
+}
+
+.infra-stepper-heading b,
+.stepper-heading b {
+  color: var(--lavender);
+}
+
+.infrastructure-step-list,
+.tcp-step-list {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  padding: 0;
+}
+
+.infrastructure-step,
+.tcp-step {
+  display: flex;
+  flex: 1 1 25%;
+  align-items: center;
+  min-height: 3.5em;
+  border-right: 1px solid var(--line);
+  padding: 0 0.7em;
+  color: var(--faint);
+  background: transparent;
+}
+
+.infrastructure-step:last-child,
+.tcp-step:last-child {
+  border-right: 0;
+}
+
+.infrastructure-step.is-current,
+.tcp-step.is-current {
+  color: var(--ink);
+  background: var(--bg-soft);
+}
+
+.infrastructure-step::before,
+.tcp-step::before {
+  top: auto;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  width: auto;
+  height: 2px;
+  background: transparent;
+}
+
+.infrastructure-step.is-current::before,
+.tcp-step.is-current::before {
+  background: var(--lavender);
+  box-shadow: none;
+}
+
+.infrastructure-step b,
+.tcp-step b {
+  color: inherit;
+  font-family: var(--mono);
+  font-size: 0.8em;
+  font-weight: 600;
+}
+
+.infrastructure-step i,
+.tcp-step i {
+  color: var(--faint);
+  font-size: 0.7em;
+}
+
+.infrastructure-step.is-current i,
+.tcp-step.is-current i {
+  color: var(--lavender);
+}
+
+.infra-stepper-progress,
+.stepper-progress {
+  margin: 0 1em;
+  background: var(--line);
+}
+
+.infra-stepper-progress span,
+.stepper-progress span {
+  background: var(--lavender);
+  box-shadow: none;
+}
+
+.infra-stepper-note,
+.stepper-footnote {
+  margin: 0.8em 1em 1em;
+  color: var(--faint);
+  font-family: var(--mono);
+  font-size: 0.8em;
+}
+
+.infrastructure-workspace,
+.tcp-workspace {
+  display: block;
+  padding: 1.4em 1em 1.2em;
+}
+
+.infra-workspace-heading,
+.workspace-heading {
+  display: block;
+  margin-bottom: 1.3em;
+}
+
+.infra-workspace-heading h2,
+.workspace-heading h2 {
+  margin: 0 0 0.6em;
+  color: var(--ink);
+  font-family: var(--mono);
+  font-size: 1.3em;
+  font-weight: 600;
+  letter-spacing: 0;
+  line-height: 1.3;
+}
+
+.layer-count,
+.connection-state {
+  display: inline-block;
+  min-width: 0;
+  margin-top: 0.8em;
+  padding: 0.4em 0.7em;
+  border-color: var(--line);
+  background: transparent;
+  text-align: left;
+}
+
+.layer-count span,
+.connection-state span {
+  color: var(--faint);
+  font-size: 0.75em;
+}
+
+.layer-count strong,
+.connection-state strong {
+  color: var(--lavender);
+  font-size: 0.9em;
+}
+
+.build-canvas,
+.tcp-wire-board {
+  min-height: 22em;
+  border-color: var(--line);
+  background: var(--bg);
+  background-image: linear-gradient(rgba(139, 131, 181, 0.06) 1px, transparent 1px), linear-gradient(90deg, rgba(139, 131, 181, 0.06) 1px, transparent 1px);
+  background-size: 2em 2em;
+}
+
+.build-grid,
+.wire-board-grid {
+  opacity: 0.35;
+  background-image: none;
+}
+
+.build-canvas-label,
+.build-canvas-footer {
+  color: var(--faint);
+  font-size: 0.75em;
+}
+
+.build-canvas-label::after {
+  background: var(--line);
+}
+
+.build-canvas-footer {
+  border-color: var(--line);
+}
+
+.build-canvas-footer strong {
+  color: var(--lavender);
+}
+
+.build-link {
+  stroke: var(--line-bright);
+  stroke-width: 1;
+}
+
+.build-link.is-active,
+.build-link.is-amber.is-active,
+.build-link.is-lavender.is-active {
+  stroke: var(--lavender);
+  stroke-width: 1;
+  filter: none;
+}
+
+.build-node,
+.build-switch,
+.build-gateway,
+.build-tower,
+.build-satellite,
+.build-cable,
+.build-server,
+.build-region {
+  color: var(--muted);
+  font-size: 0.75em;
+}
+
+.build-node b,
+.build-switch b,
+.build-gateway b,
+.build-tower b,
+.build-satellite b,
+.build-cable b,
+.build-server b,
+.build-region b {
+  color: var(--ink);
+  font-size: 0.9em;
+  font-weight: 600;
+}
+
+.build-node span,
+.build-switch span,
+.build-gateway span,
+.build-tower span,
+.build-satellite span,
+.build-cable span,
+.build-server span,
+.build-region span,
+.build-node small,
+.build-switch small,
+.build-gateway small,
+.build-tower small,
+.build-satellite small,
+.build-cable small,
+.build-server small,
+.build-region small {
+  color: var(--faint);
+  font-size: 0.7em;
+}
+
+.build-node::before,
+.build-switch::before,
+.build-gateway::before,
+.build-tower::before,
+.build-satellite::before,
+.build-cable::before,
+.build-server::before,
+.build-region::before {
+  color: var(--lavender);
+  text-shadow: none;
+}
+
+.build-node.is-highlight,
+.build-switch.is-highlight,
+.build-gateway.is-highlight,
+.build-tower.is-highlight,
+.build-satellite.is-highlight,
+.build-cable.is-highlight,
+.build-server.is-highlight,
+.build-region.is-highlight {
+  color: var(--lavender);
+  transform: none;
+}
+
+.build-label {
+  border-color: var(--line-bright);
+  color: var(--lavender);
+  background: var(--bg);
+  font-size: 0.7em;
+}
+
+.build-stack {
+  border-color: var(--line-bright);
+  background: var(--bg-soft);
+}
+
+.build-stack span {
+  border-color: var(--line);
+  color: var(--muted);
+}
+
+.build-stack span:last-child {
+  border-color: var(--lavender);
+  color: var(--lavender);
+  background: transparent;
+}
+
+.build-checklist {
+  border-color: var(--line-bright);
+  background: var(--bg-soft);
+}
+
+.build-checklist div {
+  color: var(--muted);
+}
+
+.build-checklist div::before {
+  color: var(--lavender);
+}
+
+.infrastructure-explanation,
+.step-explainer {
+  display: block;
+  margin-top: 1.2em;
+  padding: 1em 0;
+  border-color: var(--line);
+  background: transparent;
+}
+
+.infra-explanation-copy > p:last-child,
+.step-explainer-copy > p:last-child {
+  color: var(--muted);
+  font-family: var(--mono);
+  font-size: 0.95em;
+}
+
+.infra-solves,
+.infra-limits,
+.step-fact {
+  margin-top: 1em;
+  padding: 0.8em 0 0;
+  border-top-color: var(--line);
+  border-left: 0;
+}
+
+.infra-solves span,
+.infra-limits span,
+.step-fact span,
+.step-explainer-kicker {
+  color: var(--lavender);
+}
+
+.infra-solves strong,
+.infra-limits strong,
+.step-fact strong {
+  color: var(--ink);
+  font-family: var(--mono);
+  font-size: 0.9em;
+}
+
+.infra-limits span {
+  color: var(--coral);
+}
+
+.infrastructure-action-panel,
+.tcp-action-panel {
+  display: block;
+  margin-top: 1.2em;
+  padding: 1em 0 0;
+  border-color: var(--line);
+}
+
+.infra-action-context,
+.action-context {
+  margin-bottom: 1em;
+}
+
+.infra-action-context > span,
+.action-context > span,
+.action-layer {
+  color: var(--lavender);
+}
+
+.infra-action-context strong,
+.action-context strong {
+  color: var(--ink);
+  font-family: var(--mono);
+  font-size: 1em;
+  font-weight: 600;
+}
+
+.infra-action-context p,
+.action-context p {
+  color: var(--muted);
+  font-family: var(--mono);
+  font-size: 0.9em;
+}
+
+.infrastructure-action-panel .button,
+.tcp-action-panel .button {
+  margin: 0 0.5em 0.5em 0;
+}
+
+.infrastructure-action-panel .button-quiet,
+.tcp-action-panel .button-quiet,
+.button-quiet {
+  border: 0;
+  color: var(--faint);
+  background: transparent;
+  font-size: 0.9em;
+}
+
+.infrastructure-action-panel .button-quiet:hover,
+.infrastructure-action-panel .button-quiet:focus-visible,
+.tcp-action-panel .button-quiet:hover,
+.tcp-action-panel .button-quiet:focus-visible,
+.button-quiet:hover,
+.button-quiet:focus-visible {
+  color: var(--lavender);
+  background: var(--bg-soft);
+}
+
+.infrastructure-log-section,
+.tcp-log-section {
+  padding-top: 3em;
+}
+
+.infrastructure-section-heading,
+.tcp-section-heading {
+  display: block;
+  margin-bottom: 1.6em;
+}
+
+.field-note-grid {
+  display: block;
+  background: transparent;
+}
+
+.field-note {
+  min-height: 0;
+  padding: 1em 0;
+  border-top: 1px solid var(--line);
+  background: transparent;
+}
+
+.field-note > span {
+  color: var(--lavender);
+  font-size: 0.8em;
+}
+
+.field-note h3 {
+  margin: 1.2em 0 0.3em;
+  color: var(--ink);
+  font-family: var(--mono);
+  font-size: 1em;
+  font-weight: 600;
+}
+
+.field-note p {
+  margin: 0;
+}
+
+.infrastructure-recap,
+.tcp-recap {
+  padding: 3em 0;
+  text-align: center;
+}
+
+.infrastructure-recap .eyebrow,
+.tcp-recap .eyebrow {
+  justify-content: center;
+}
+
+.infrastructure-recap-content > p:not(.eyebrow),
+.tcp-recap-content > p:not(.eyebrow) {
+  max-width: 62ch;
+  margin: 0 auto;
+}
+
+.infrastructure-footer,
+.tcp-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1ch;
+  max-width: none;
+  padding: 1.2em 0 2em;
+  border-color: var(--line);
+  color: var(--faint);
+  font-family: var(--mono);
+  font-size: 0.8em;
+}
+
+.infrastructure-footer a,
+.tcp-footer a {
+  color: var(--faint);
+  border: 0;
+}
+
+.infrastructure-footer a:hover,
+.infrastructure-footer a:focus-visible,
+.tcp-footer a:hover,
+.tcp-footer a:focus-visible {
+  color: var(--lavender);
+}
+
+@media (max-width: 600px) {
+  body {
+    padding-right: 1ch;
+    padding-left: 1ch;
+  }
+
+  .topbar,
+  .infrastructure-topbar {
+    align-items: flex-start;
+    flex-wrap: wrap;
+    gap: 0.7em;
+  }
+
+  .topnav,
+  .infra-scope-pill {
+    order: 3;
+    width: 100%;
+    margin-left: 0;
+    padding-top: 0.7em;
+    border-top: 1px solid var(--line);
+  }
+
+  .topnav {
+    gap: 1.2ch;
+    font-size: 0.8em;
+  }
+
+  .topnav-cta,
+  .infra-back-link,
+  .tcp-back-link {
+    display: none;
+  }
+
+  .hero h1,
+  .infrastructure-hero-copy h1,
+  .tcp-hero-copy h1 {
+    font-size: 2.25em;
+  }
+
+  .hero-actions {
+    align-items: center;
+    flex-direction: column;
+    gap: 0.8em;
+  }
+
+  .hero-meta {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.3em 1ch;
+    font-size: 0.72em;
+  }
+
+  .journey-step,
+  .infrastructure-step,
+  .tcp-step {
+    flex-basis: 50%;
+    min-height: 4em;
+  }
+
+  .journey-step:nth-child(even),
+  .infrastructure-step:nth-child(even),
+  .tcp-step:nth-child(even) {
+    border-right: 0;
+  }
+
+  .journey-step:nth-child(-n + 4),
+  .infrastructure-step:nth-child(-n + 4),
+  .tcp-step:nth-child(-n + 4) {
+    border-bottom: 1px solid var(--line);
+  }
+
+  .step-title,
+  .infrastructure-step b,
+  .tcp-step b {
+    font-size: 0.78em;
+  }
+
+  .step-era,
+  .infrastructure-step i,
+  .tcp-step i {
+    font-size: 0.68em;
+  }
+
+  .analogy-visual,
+  .gateway-card,
+  .workshop-stage,
+  .build-canvas,
+  .tcp-wire-board {
+    margin-right: 0;
+    margin-left: 0;
+  }
+
+  .build-canvas,
+  .tcp-wire-board {
+    min-height: 19em;
+  }
+
+  .source-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .infrastructure-footer,
+  .tcp-footer,
+  .footer {
+    align-items: flex-start;
+    flex-direction: column;
+    padding-top: 1.2em;
+  }
+
+  .infrastructure-stack,
+  .tcp-recap-chain,
+  .takeaway-chain {
+    gap: 0.5ch;
+    font-size: 0.72em;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero h1::after {
+    animation: none;
+  }
+}

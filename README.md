@@ -75,4 +75,5 @@ The site links to primary and foundational sources in the homepage's **Read the 
 - `infrastructure.css` — focused infrastructure-lab layout and responsive styles
 - `app.js` — homepage timeline, packet workshop, and Netscape demo interactions
 - `infrastructure.js` — infrastructure stages, build visualizer, and step navigation
+- `cody.css` — minimal warm-paper visual system inspired by the reference
 - `tcp.html` — legacy redirect to the infrastructure lab
