@@ -6,14 +6,19 @@ The site is intentionally built with plain HTML, CSS, and JavaScript so it can b
 
 ## What the project teaches
 
-The interactive connection lab walks through a fictional browser request:
+The homepage tells the broader story of the early Web and keeps the simulation separate from that narrative.
 
-1. Read a memorable name with DNS.
-2. Resolve it to an IP address.
-3. Route packets through the network.
-4. Complete the TCP three-way handshake.
-5. Send an HTTP `GET` request.
-6. Receive HTML and render a page.
+The dedicated **TCP Lab** (`tcp.html`) is intentionally limited to one protocol. It walks a learner through:
+
+1. Two TCP endpoints
+2. The client’s SYN
+3. The server’s SYN + ACK
+4. The client’s final ACK
+5. A data segment with sequence and acknowledgement numbers
+6. A simulated lost segment and retransmission
+7. A clean FIN/ACK close
+
+The dedicated lab does not mix in DNS, IP routing, HTTP, or HTML.
 
 The surrounding story explains the layers that came before and after TCP:
 
@@ -62,6 +67,9 @@ The site links to primary and foundational sources in the **Read the original bl
 
 ## Files
 
-- `index.html` — page structure and narrative content
-- `styles.css` — responsive visual design and animation
-- `app.js` — timeline interactions, connection simulation, and browser demo
+- `index.html` — narrative homepage and simulation gateway
+- `tcp.html` — dedicated, step-by-step TCP-only simulation
+- `styles.css` — shared visual system and homepage design
+- `tcp.css` — focused TCP-lab layout and responsive styles
+- `app.js` — homepage timeline, packet workshop, and Netscape demo interactions
+- `tcp.js` — TCP stepper, handshake animation, recovery, and connection close

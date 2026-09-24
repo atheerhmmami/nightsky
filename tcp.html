@@ -1,0 +1,152 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="A clear, step-by-step TCP simulation: handshake, data, recovery, and close." />
+    <title>TCP Lab — The Three-Way Handshake</title>
+    <link rel="stylesheet" href="styles.css" />
+    <link rel="stylesheet" href="tcp.css" />
+  </head>
+  <body class="tcp-page">
+    <header class="tcp-topbar">
+      <a class="brand" href="index.html" aria-label="Return to NIGHTSKY home">
+        <span class="brand-mark" aria-hidden="true"><i></i><i></i><i></i></span>
+        <span>NIGHTSKY</span>
+        <span class="brand-slash">/</span>
+        <span class="brand-muted">TCP LAB</span>
+      </a>
+      <div class="tcp-scope-pill"><span class="signal-dot"></span> TRANSPORT LAYER ONLY</div>
+      <a class="tcp-back-link" href="index.html">Back to the story <span aria-hidden="true">↗</span></a>
+    </header>
+
+    <main class="tcp-main">
+      <section class="tcp-hero">
+        <div class="tcp-hero-copy">
+          <p class="eyebrow"><span class="eyebrow-dot"></span> Dedicated simulation / TCP only</p>
+          <h1>Make two machines <em>agree to talk.</em></h1>
+          <p>
+            This page isolates one protocol. You will watch a client and server synchronize their sequence numbers,
+            send a message, recover a missing segment, and close the connection.
+          </p>
+          <div class="tcp-scope-note">
+            <span>SCOPE</span>
+            <p>No DNS. No HTTP. No HTML. This is TCP, one step at a time.</p>
+          </div>
+        </div>
+        <div class="tcp-hero-diagram" aria-label="Illustration of a TCP segment moving between a client and server" role="img">
+          <div class="tcp-hero-ring ring-large" aria-hidden="true"></div>
+          <div class="tcp-hero-ring ring-small" aria-hidden="true"></div>
+          <div class="tcp-hero-node client"><span>CLIENT</span><b>10.0.0.10</b><small>port 51000</small></div>
+          <div class="tcp-hero-node server"><span>SERVER</span><b>10.0.0.20</b><small>port 443</small></div>
+          <div class="tcp-hero-packet"><span>TCP</span><b>SYN</b><i>SEQ 1000</i></div>
+          <div class="tcp-hero-caption">A connection begins<br />with a question.</div>
+        </div>
+      </section>
+
+      <section class="tcp-lab-shell" aria-labelledby="labTitle">
+        <aside class="tcp-stepper" aria-label="TCP simulation steps">
+          <div class="stepper-heading">
+            <span>THE CONVERSATION</span>
+            <b id="stepCount">01 / 07</b>
+          </div>
+          <div class="tcp-step-list">
+            <button class="tcp-step is-current" data-tcp-step="0" type="button"><span>01</span><b>Two endpoints</b><i>setup</i></button>
+            <button class="tcp-step" data-tcp-step="1" type="button"><span>02</span><b>Client says SYN</b><i>request</i></button>
+            <button class="tcp-step" data-tcp-step="2" type="button"><span>03</span><b>Server answers</b><i>response</i></button>
+            <button class="tcp-step" data-tcp-step="3" type="button"><span>04</span><b>Client confirms</b><i>agreement</i></button>
+            <button class="tcp-step" data-tcp-step="4" type="button"><span>05</span><b>Send data</b><i>sequence</i></button>
+            <button class="tcp-step" data-tcp-step="5" type="button"><span>06</span><b>Lose + recover</b><i>reliability</i></button>
+            <button class="tcp-step" data-tcp-step="6" type="button"><span>07</span><b>Close cleanly</b><i>finish</i></button>
+          </div>
+          <div class="stepper-progress" aria-hidden="true"><span id="stepProgress"></span></div>
+          <p class="stepper-footnote">Use the primary action on the right. You can revisit completed steps, but the simulation will not let you skip ahead.</p>
+        </aside>
+
+        <div class="tcp-workspace">
+          <div class="workspace-heading">
+            <div>
+              <p class="workspace-kicker" id="workspaceKicker">STEP 01 / SETUP</p>
+              <h2 id="labTitle">Two endpoints are ready.</h2>
+            </div>
+            <div class="connection-state"><span>TCP STATE</span><strong id="tcpState">CLOSED</strong></div>
+          </div>
+
+          <div class="tcp-wire-board" id="wireBoard">
+            <div class="wire-board-grid" aria-hidden="true"></div>
+            <div class="wire-label wire-label-top"><span>RELIABLE, ORDERED BYTE STREAM</span><i></i></div>
+            <div class="tcp-endpoint client-endpoint" id="clientEndpoint">
+              <div class="endpoint-icon">C</div>
+              <div><b>CLIENT</b><span>10.0.0.10</span><small>port 51000</small></div>
+            </div>
+            <div class="tcp-wire-path" aria-hidden="true">
+              <span class="wire-path-line"></span>
+              <span class="wire-direction direction-right">→</span>
+              <span class="wire-direction direction-left">←</span>
+            </div>
+            <div class="tcp-endpoint server-endpoint" id="serverEndpoint">
+              <div class="endpoint-icon">S</div>
+              <div><b>SERVER</b><span>10.0.0.20</span><small>port 443</small></div>
+            </div>
+            <div class="tcp-packet" id="tcpPacket" aria-hidden="true"><b>TCP</b><span>SYN</span><i>SEQ 1000</i></div>
+            <div class="wire-board-footer"><span id="wireStatus">WAITING FOR YOUR INPUT</span><strong id="wireStatusValue">NO SEGMENT SENT</strong></div>
+          </div>
+
+          <div class="step-explainer">
+            <div class="step-explainer-copy">
+              <p class="step-explainer-kicker" id="stepKicker">WHY THIS MATTERS</p>
+              <p id="stepExplanation">TCP is a conversation between two endpoints. Before any application data moves, both sides need to agree on where the byte stream begins.</p>
+            </div>
+            <div class="step-fact" id="stepFact"><span>KEY IDEA</span><strong>Sequence numbers turn a stream into a trackable conversation.</strong></div>
+          </div>
+
+          <div class="tcp-action-panel">
+            <div class="action-context">
+              <span id="actionIndex">01</span>
+              <div><strong id="actionTitle">Meet the endpoints</strong><p id="actionPrompt">The client and server are waiting. Start the TCP conversation when you are ready.</p></div>
+            </div>
+            <div class="tcp-message-field" id="messageField">
+              <label for="tcpMessage">MESSAGE TO SEND</label>
+              <input id="tcpMessage" value="Hello, network." maxlength="80" />
+            </div>
+            <div class="action-buttons">
+              <button class="button button-primary" id="tcpPrimary" type="button">Start the handshake <span aria-hidden="true">→</span></button>
+              <button class="button button-quiet" id="tcpReset" type="button">Reset simulation</button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="tcp-log-section" aria-labelledby="logTitle">
+        <div class="tcp-section-heading">
+          <div><p class="eyebrow"><span class="eyebrow-dot"></span> Observe every exchange</p><h2 id="logTitle">The conversation log.</h2></div>
+          <p>Every line is a TCP segment or acknowledgement. The flags matter more than the message inside the payload.</p>
+        </div>
+        <div class="tcp-log-shell">
+          <div class="tcp-log-toolbar"><span><i></i><i></i><i></i> tcp-transcript</span><b id="logStatus">AWAITING CONNECTION</b></div>
+          <ol class="tcp-log" id="tcpLog" aria-live="polite">
+            <li class="log-placeholder">The connection is quiet. Start the simulation to record the first segment.</li>
+          </ol>
+        </div>
+      </section>
+
+      <section class="tcp-recap">
+        <div class="tcp-recap-glow" aria-hidden="true"></div>
+        <div class="tcp-recap-content">
+          <p class="eyebrow"><span class="eyebrow-dot"></span> The TCP takeaway</p>
+          <h2>Reliability is a memory of the journey.</h2>
+          <p>TCP does not make the network perfect. It gives both sides enough shared memory — sequence numbers, acknowledgements, and retries — to recover from an imperfect journey.</p>
+          <div class="tcp-recap-chain"><span>SYN</span><i>→</i><span>SYN · ACK</span><i>→</i><span>ACK</span><i>→</i><span>DATA</span><i>→</i><span>RECOVER</span><i>→</i><span>FIN</span></div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="tcp-footer">
+      <a href="index.html">← Return to NIGHTSKY</a>
+      <span>TCP / educational simulation / no real sockets</span>
+      <a href="https://www.rfc-editor.org/rfc/rfc793" target="_blank" rel="noreferrer">Read RFC 793 ↗</a>
+    </footer>
+
+    <script src="tcp.js"></script>
+  </body>
+</html>

@@ -1381,6 +1381,159 @@ button {
   font-weight: 500;
 }
 
+.simulation-gateway {
+  display: grid;
+  grid-template-columns: minmax(0, 0.9fr) minmax(370px, 1.1fr);
+  align-items: center;
+  gap: 75px;
+  padding-top: 135px;
+  padding-bottom: 140px;
+  border-top: 1px solid var(--line);
+}
+
+.gateway-copy h2 {
+  max-width: 550px;
+  margin: 0;
+  color: #f0f2f2;
+  font-size: clamp(34px, 4.4vw, 58px);
+  font-weight: 600;
+  letter-spacing: -0.065em;
+  line-height: 1.03;
+}
+
+.gateway-copy > p:not(.eyebrow) {
+  max-width: 500px;
+  margin: 24px 0 31px;
+  color: var(--muted);
+  font-size: 14px;
+  line-height: 1.8;
+}
+
+.gateway-card {
+  position: relative;
+  overflow: hidden;
+  border: 1px solid var(--line-bright);
+  background:
+    linear-gradient(rgba(115, 217, 210, 0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(115, 217, 210, 0.03) 1px, transparent 1px),
+    var(--panel-deep);
+  background-size: 32px 32px;
+  box-shadow: 18px 20px 0 rgba(0, 0, 0, 0.12);
+}
+
+.gateway-card::before {
+  position: absolute;
+  top: -80px;
+  right: -60px;
+  width: 240px;
+  height: 240px;
+  border-radius: 50%;
+  background: rgba(115, 217, 210, 0.12);
+  filter: blur(45px);
+  content: '';
+}
+
+.gateway-card-top {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  justify-content: space-between;
+  padding: 18px 21px;
+  border-bottom: 1px solid var(--line);
+  color: var(--faint);
+  font-family: var(--mono);
+  font-size: 9px;
+  letter-spacing: 0.1em;
+}
+
+.gateway-card-top b {
+  color: var(--cyan);
+  font-weight: 400;
+}
+
+.gateway-mini-wire {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 58px 26px 44px;
+  color: var(--muted);
+  font-family: var(--mono);
+  font-size: 9px;
+  letter-spacing: 0.08em;
+  text-align: center;
+}
+
+.gateway-mini-wire i {
+  position: relative;
+  display: block;
+  width: 54px;
+  height: 1px;
+  background: linear-gradient(90deg, var(--cyan), var(--amber));
+}
+
+.gateway-mini-wire i::after {
+  position: absolute;
+  top: -3px;
+  right: 0;
+  width: 6px;
+  height: 6px;
+  border-top: 1px solid var(--amber);
+  border-right: 1px solid var(--amber);
+  content: '';
+  transform: rotate(45deg);
+}
+
+.gateway-mini-wire strong {
+  padding: 8px 10px;
+  color: #071116;
+  background: var(--cyan);
+  font-size: 9px;
+  font-weight: 500;
+  box-shadow: 0 0 18px rgba(115, 217, 210, 0.35);
+}
+
+.gateway-steps-preview {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1px;
+  border-top: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+  background: var(--line);
+}
+
+.gateway-steps-preview span {
+  min-height: 57px;
+  padding: 12px 9px;
+  color: var(--faint);
+  background: rgba(8, 13, 20, 0.58);
+  font-family: var(--mono);
+  font-size: 8px;
+  line-height: 1.4;
+}
+
+.gateway-steps-preview b {
+  display: block;
+  margin-bottom: 3px;
+  color: var(--cyan);
+  font-weight: 400;
+}
+
+.gateway-card > p {
+  position: relative;
+  z-index: 1;
+  max-width: 390px;
+  margin: 22px 23px 24px;
+  color: var(--muted);
+  font-family: var(--serif);
+  font-size: 15px;
+  font-style: italic;
+  line-height: 1.55;
+}
+
 .lab {
   padding-top: 150px;
   padding-bottom: 145px;
@@ -2383,6 +2536,11 @@ button {
     gap: 35px;
   }
 
+  .simulation-gateway {
+    grid-template-columns: minmax(0, 0.85fr) minmax(330px, 1.15fr);
+    gap: 45px;
+  }
+
   .browser-story-grid {
     gap: 42px;
   }
@@ -2558,6 +2716,14 @@ button {
 
   .analogy-visual {
     margin-top: 27px;
+  }
+
+  .simulation-gateway {
+    display: block;
+  }
+
+  .gateway-card {
+    margin-top: 48px;
   }
 
   .workshop-shell {

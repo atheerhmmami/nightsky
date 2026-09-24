@@ -57,65 +57,14 @@ const journeySteps = [
   },
 ];
 
-const connectionSequence = [
-  {
-    status: 'RESOLVING',
-    label: 'READING THE NAME',
-    value: 'DNS lookup',
-    message: 'The browser asks a name resolver what first.example means.',
-    active: ['origin', 'resolver'],
-    packet: { left: '39%', top: '22%' },
-    handshake: null,
-  },
-  {
-    status: 'ROUTING',
-    label: 'ADDRESS FOUND',
-    value: '198.51.100.24',
-    message: 'DNS returns a documentation IP address; routers now have a destination.',
-    active: ['resolver', 'router'],
-    packet: { left: '61%', top: '50%' },
-    handshake: null,
-  },
-  {
-    status: 'NEGOTIATING',
-    label: 'FIRST HANDSHAKE',
-    value: 'SYN',
-    message: 'The browser asks the server: “I would like to begin a reliable conversation.”',
-    active: ['origin', 'server'],
-    packet: { left: '80%', top: '34%' },
-    handshake: 'syn',
-    packetType: '',
-  },
-  {
-    status: 'NEGOTIATING',
-    label: 'SERVER REPLIES',
-    value: 'SYN · ACK',
-    message: 'The server answers: “I hear you, and I am ready too.”',
-    active: ['server', 'origin'],
-    packet: { left: '42%', top: '33%' },
-    handshake: 'synack',
-    packetType: 'packet-response',
-  },
-  {
-    status: 'REQUESTING',
-    label: 'ACK + GET',
-    value: 'GET /',
-    message: 'The final acknowledgement completes the handshake; the browser asks for a page.',
-    active: ['origin', 'router', 'server'],
-    packet: { left: '80%', top: '34%' },
-    handshake: 'ack',
-    packetType: 'packet-request',
-  },
-  {
-    status: 'RENDERING',
-    label: 'PAGE RECEIVED',
-    value: '200 OK · HTML',
-    message: 'The server sends a page. The browser turns the response into pixels you can see.',
-    active: ['server', 'origin'],
-    packet: { left: '32%', top: '48%' },
-    handshake: 'ack',
-    packetType: 'packet-response',
-  },
+const analogyByStep = [
+  'Imagine sending a long letter. A dedicated circuit is one train on one track: elegant, but the whole track is reserved while the train moves. Packet switching is a fleet of envelopes, each carrying a piece of the letter and a return address.',
+  'A packet is a small, self-contained piece of a message. It can wait, take a different route, and still know what it is carrying and where it is going.',
+  'An IP address is a destination written in a language routers can read. The address does not promise a perfect trip; it gives every hop a next step.',
+  'TCP is the memory and the conversation manager. It remembers the order, notices what is missing, and asks for missing pieces to be sent again.',
+  'DNS is the phone book of the network. It turns a name people can remember into an address machines can route toward.',
+  'The Web adds a language for requesting and describing resources. A page is no longer just a stream of bytes; it has structure, links, and meaning.',
+  'A browser is the interpreter at the edge of the network. It turns packets into layout, links, images, and eventually behavior.',
 ];
 
 const journeyButtons = [...document.querySelectorAll('.journey-step')];
@@ -127,16 +76,6 @@ const detailProblem = document.querySelector('#detailProblem');
 const detailTag = document.querySelector('#detailTag');
 const railProgress = document.querySelector('#railProgress');
 const analogyBody = document.querySelector('#analogyBody');
-
-const analogyByStep = [
-  'Imagine sending a long letter. A dedicated circuit is one train on one track: elegant, but the whole track is reserved while the train moves. Packet switching is a fleet of envelopes, each carrying a piece of the letter and a return address.',
-  'A packet is a small, self-contained piece of a message. It can wait, take a different route, and still know what it is carrying and where it is going.',
-  'An IP address is a destination written in a language routers can read. The address does not promise a perfect trip; it gives every hop a next step.',
-  'TCP is the memory and the conversation manager. It remembers the order, notices what is missing, and asks for missing pieces to be sent again.',
-  'DNS is the phone book of the network. It turns a name people can remember into an address machines can route toward.',
-  'The Web adds a language for requesting and describing resources. A page is no longer just a stream of bytes; it has structure, links, and meaning.',
-  'A browser is the interpreter at the edge of the network. It turns packets into layout, links, images, and eventually behavior.',
-];
 
 function renderJourney(index) {
   const step = journeySteps[index];
@@ -164,7 +103,6 @@ function renderJourney(index) {
 journeyButtons.forEach((button) => {
   button.addEventListener('click', () => renderJourney(Number(button.dataset.step)));
 });
-
 renderJourney(0);
 
 const packetCountInput = document.querySelector('#packetCount');
@@ -186,18 +124,17 @@ function clearWorkshopTimers() {
 }
 
 function setWorkshopStep(currentStep) {
+  const order = ['split', 'travel', 'repair'];
   workshopSteps.forEach((step) => {
     const stepName = step.dataset.workshopStep;
     step.classList.toggle('is-current', stepName === currentStep);
-    step.classList.toggle('is-done', ['split', 'travel', 'repair'].indexOf(stepName) < ['split', 'travel', 'repair'].indexOf(currentStep));
+    step.classList.toggle('is-done', order.indexOf(stepName) < order.indexOf(currentStep));
   });
 }
 
 function makePacketPiece(index) {
   const piece = document.createElement('div');
   piece.className = 'packet-piece';
-  piece.dataset.packetIndex = String(index);
-
   const number = document.createElement('b');
   number.textContent = `0${index + 1}`;
   const label = document.createElement('span');
@@ -213,9 +150,7 @@ function renderPacketPreview() {
   packetCountOutput.textContent = `${count} packet${count === 1 ? '' : 's'}`;
   dropPacketLabel.textContent = dropPacketInput.checked ? 'Simulate packet loss' : 'Deliver every piece';
   packetTrack.innerHTML = '';
-  for (let index = 0; index < count; index += 1) {
-    packetTrack.appendChild(makePacketPiece(index));
-  }
+  for (let index = 0; index < count; index += 1) packetTrack.appendChild(makePacketPiece(index));
   workshopStatus.textContent = 'READY TO SEND';
   workshopMessage.textContent = `A message is waiting to be split into ${count} smaller pieces.`;
   setWorkshopStep('split');
@@ -293,104 +228,6 @@ dropPacketInput.addEventListener('change', () => {
 sendPacketsButton.addEventListener('click', runPacketWorkshop);
 renderPacketPreview();
 
-const connectButton = document.querySelector('#connectButton');
-const targetUrl = document.querySelector('#targetUrl');
-const consoleStatus = document.querySelector('#consoleStatus');
-const progressBar = document.querySelector('#progressBar');
-const connectionLog = document.querySelector('#connectionLog');
-const logCount = document.querySelector('#logCount');
-const readoutLabel = document.querySelector('#readoutLabel');
-const readoutValue = document.querySelector('#readoutValue');
-const travelingPacket = document.querySelector('#travelingPacket');
-const networkNodes = [...document.querySelectorAll('.map-node')];
-const handshakeParts = [...document.querySelectorAll('[data-handshake]')];
-let connectionTimer;
-let connectionRun = 0;
-let connectionRunning = false;
-
-function safeHostname(value) {
-  const trimmed = value.trim();
-  if (!trimmed) return 'first.example';
-  try {
-    const withProtocol = /^[a-z][a-z\d+.-]*:\/\//i.test(trimmed) ? trimmed : `http://${trimmed}`;
-    return new URL(withProtocol).hostname || 'first.example';
-  } catch {
-    return trimmed.slice(0, 80).replace(/[^a-z0-9.:/_-]/gi, '');
-  }
-}
-
-function resetConnectionUi() {
-  connectionRun += 1;
-  const run = connectionRun;
-  connectionRunning = true;
-  connectButton.disabled = true;
-  connectButton.innerHTML = 'Listening <span aria-hidden="true">· · ·</span>';
-  consoleStatus.textContent = 'WORKING';
-  progressBar.style.width = '0%';
-  logCount.textContent = '0 / 6';
-  readoutLabel.textContent = 'READING INPUT';
-  readoutValue.textContent = safeHostname(targetUrl.value);
-  connectionLog.innerHTML = '';
-  travelingPacket.className = 'traveling-packet';
-  networkNodes.forEach((node) => node.classList.remove('is-active'));
-  handshakeParts.forEach((part) => part.classList.remove('is-active'));
-
-  connectionSequence.forEach((step, index) => {
-    connectionTimer = window.setTimeout(() => {
-      if (run !== connectionRun) return;
-
-      const percentage = Math.round(((index + 1) / connectionSequence.length) * 100);
-      progressBar.style.width = `${percentage}%`;
-      consoleStatus.textContent = step.status;
-      readoutLabel.textContent = step.label;
-      readoutValue.textContent = index === 0 ? safeHostname(targetUrl.value) : step.value;
-      logCount.textContent = `${index + 1} / ${connectionSequence.length}`;
-
-      const item = document.createElement('li');
-      const message = document.createElement('div');
-      const title = document.createElement('strong');
-      const detail = document.createElement('span');
-      title.textContent = step.label;
-      detail.textContent = step.message;
-      message.append(title, detail);
-      item.append(message);
-      connectionLog.appendChild(item);
-      connectionLog.scrollTop = connectionLog.scrollHeight;
-
-      networkNodes.forEach((node) => node.classList.remove('is-active'));
-      step.active.forEach((activeNode) => {
-        document.querySelector(`[data-node="${activeNode}"]`)?.classList.add('is-active');
-      });
-
-      travelingPacket.style.left = step.packet.left;
-      travelingPacket.style.top = step.packet.top;
-      travelingPacket.className = `traveling-packet is-visible ${step.packetType || ''}`;
-
-      handshakeParts.forEach((part) => part.classList.remove('is-active'));
-      if (step.handshake) {
-        document.querySelector(`[data-handshake="${step.handshake}"]`)?.classList.add('is-active');
-      }
-
-      if (index === connectionSequence.length - 1) {
-        connectionRunning = false;
-        connectButton.disabled = false;
-        connectButton.innerHTML = 'Run again <span aria-hidden="true">↻</span>';
-        consoleStatus.textContent = 'CONNECTED';
-        readoutLabel.textContent = 'A PAGE, RENDERED';
-        readoutValue.textContent = 'Hello, world.';
-      }
-    }, index === 0 ? 420 : 720);
-  });
-}
-
-connectButton.addEventListener('click', resetConnectionUi);
-targetUrl.addEventListener('keydown', (event) => {
-  if (event.key === 'Enter' && !connectionRunning) resetConnectionUi();
-});
-targetUrl.addEventListener('input', () => {
-  if (!connectionRunning) readoutValue.textContent = safeHostname(targetUrl.value);
-});
-
 const helloButton = document.querySelector('#helloButton');
 const scriptOutput = document.querySelector('#scriptOutput');
 const browserReload = document.querySelector('#browserReload');
@@ -432,11 +269,4 @@ browserReload.addEventListener('click', () => {
 window.addEventListener('load', () => {
   rememberVisit();
   updateCookieStatus();
-});
-
-document.querySelectorAll('a[href^="#"]').forEach((link) => {
-  link.addEventListener('click', () => {
-    const target = document.querySelector(link.getAttribute('href'));
-    if (target) target.setAttribute('tabindex', '-1');
-  });
 });
