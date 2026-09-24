@@ -1636,6 +1636,92 @@ input:focus-visible {
   color: var(--lavender);
 }
 
+/* Language controls and Arabic reading direction. */
+.language-toggle {
+  min-width: 2.8em;
+  border: 1px solid var(--line-bright);
+  border-radius: 5px;
+  padding: 0.1em 0.6em;
+  color: var(--lavender);
+  background: transparent;
+  font-family: var(--mono);
+  font-size: 0.8em;
+  line-height: 1.6;
+  transition: color 160ms ease, border-color 160ms ease, background 160ms ease;
+}
+
+.language-toggle:hover,
+.language-toggle:focus-visible {
+  border-color: var(--lavender);
+  color: #fff;
+  background: var(--lavender);
+}
+
+html[lang="ar"] {
+  direction: rtl;
+  --sans: "Noto Sans Arabic", Tahoma, Arial, sans-serif;
+  --serif: "Noto Sans Arabic", Tahoma, Arial, sans-serif;
+  --mono: "Noto Sans Arabic", Tahoma, Arial, sans-serif;
+}
+
+html[lang="en"] {
+  direction: ltr;
+}
+
+html[lang="ar"] .topbar,
+html[lang="ar"] .infrastructure-topbar {
+  direction: rtl;
+}
+
+html[lang="ar"] .topnav,
+html[lang="ar"] .infra-scope-pill {
+  direction: rtl;
+  margin-right: auto;
+  margin-left: 0;
+}
+
+html[lang="ar"] .section-heading,
+html[lang="ar"] .gateway-copy,
+html[lang="ar"] .infrastructure-workspace,
+html[lang="ar"] .field-note,
+html[lang="ar"] .source-card,
+html[lang="ar"] .story-panel,
+html[lang="ar"] .infrastructure-action-panel,
+html[lang="ar"] .infrastructure-explanation {
+  text-align: right;
+}
+
+html[lang="ar"] .journey-step,
+html[lang="ar"] .infrastructure-step,
+html[lang="ar"] .tcp-step,
+html[lang="ar"] .infrastructure-stepper,
+html[lang="ar"] .source-card,
+html[lang="ar"] .gateway-copy {
+  text-align: right;
+}
+
+html[lang="ar"] .build-canvas,
+html[lang="ar"] .build-illustration,
+html[lang="ar"] .build-canvas-label,
+html[lang="ar"] .build-canvas-footer,
+html[lang="ar"] .gateway-mini-wire,
+html[lang="ar"] .infrastructure-stack,
+html[lang="ar"] .takeaway-chain,
+html[lang="ar"] .browser-location {
+  direction: ltr;
+  text-align: left;
+}
+
+html[lang="ar"] .build-canvas-footer,
+html[lang="ar"] .build-canvas-label {
+  direction: rtl;
+  text-align: right;
+}
+
+html[lang="ar"] .language-toggle {
+  font-family: var(--mono);
+}
+
 @media (max-width: 600px) {
   body {
     width: calc(100% - 24px);

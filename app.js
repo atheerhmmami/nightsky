@@ -68,6 +68,7 @@ const analogyByStep = [
 ];
 
 const journeyButtons = [...document.querySelectorAll('.journey-step')];
+let currentJourneyIndex = 0;
 const detailIndex = document.querySelector('#detailIndex');
 const detailIcon = document.querySelector('#detailIcon');
 const detailTitle = document.querySelector('#detailTitle');
@@ -77,9 +78,14 @@ const detailTag = document.querySelector('#detailTag');
 const railProgress = document.querySelector('#railProgress');
 const analogyBody = document.querySelector('#analogyBody');
 
+function refreshTranslation() {
+  window.NIGHTSKY_I18N?.apply(document);
+}
+
 function renderJourney(index) {
   const step = journeySteps[index];
   if (!step) return;
+  currentJourneyIndex = index;
 
   journeyButtons.forEach((button, buttonIndex) => {
     const active = buttonIndex === index;
@@ -98,6 +104,7 @@ function renderJourney(index) {
   const progress = index === 0 ? 0 : (index / (journeySteps.length - 1)) * 100;
   railProgress.style.height = `${progress}%`;
   railProgress.style.width = `${progress}%`;
+  refreshTranslation();
 }
 
 journeyButtons.forEach((button) => {
@@ -154,6 +161,7 @@ function renderPacketPreview() {
   workshopStatus.textContent = 'READY TO SEND';
   workshopMessage.textContent = `A message is waiting to be split into ${count} smaller pieces.`;
   setWorkshopStep('split');
+  refreshTranslation();
 }
 
 function runPacketWorkshop() {
@@ -181,6 +189,7 @@ function runPacketWorkshop() {
     workshopStatus.textContent = 'IN TRANSIT';
     workshopMessage.textContent = 'Each piece carries an address, a sequence number, and a small piece of the message.';
     setWorkshopStep('travel');
+    refreshTranslation();
   }, 420));
 
   if (shouldDrop) {
@@ -190,6 +199,7 @@ function runPacketWorkshop() {
       workshopStatus.textContent = 'MISSING PIECE';
       workshopMessage.textContent = `The receiver notices that packet 0${lostIndex + 1} never arrived.`;
       setWorkshopStep('repair');
+      refreshTranslation();
     }, 1020));
 
     workshopTimers.push(window.setTimeout(() => {
@@ -198,6 +208,7 @@ function runPacketWorkshop() {
       pieces[lostIndex].classList.add('is-repaired');
       workshopStatus.textContent = 'REPAIRING';
       workshopMessage.textContent = 'TCP remembers the gap and asks the sender to retransmit the missing sequence.';
+      refreshTranslation();
     }, 1640));
   }
 
@@ -212,6 +223,7 @@ function runPacketWorkshop() {
       ? 'Every sequence is present. The receiver can rebuild the original message.'
       : 'Every piece arrived in order. The message is ready to be read.';
     setWorkshopStep('repair');
+    refreshTranslation();
     workshopSteps.forEach((step) => step.classList.add('is-done'));
     workshopRunning = false;
     sendPacketsButton.disabled = false;
@@ -228,6 +240,11 @@ dropPacketInput.addEventListener('change', () => {
 sendPacketsButton.addEventListener('click', runPacketWorkshop);
 renderPacketPreview();
 
+window.addEventListener('nightsky:languagechange', () => {
+  renderJourney(currentJourneyIndex);
+  if (!workshopRunning) renderPacketPreview();
+});
+
 const helloButton = document.querySelector('#helloButton');
 const scriptOutput = document.querySelector('#scriptOutput');
 const browserReload = document.querySelector('#browserReload');
@@ -242,6 +259,7 @@ function readVisitCookie() {
 function updateCookieStatus() {
   const visits = readVisitCookie();
   cookieStatus.textContent = visits ? `${visits} local visit${visits === 1 ? '' : 's'} remembered` : 'No local cookie yet';
+  refreshTranslation();
 }
 
 function runScript() {
@@ -252,6 +270,7 @@ function runScript() {
     'You just made the page respond — a very early kind of magic.',
   ];
   scriptOutput.textContent = messages[(scriptClicks - 1) % messages.length];
+  refreshTranslation();
 }
 
 function rememberVisit() {
@@ -264,6 +283,7 @@ helloButton.addEventListener('click', runScript);
 browserReload.addEventListener('click', () => {
   scriptClicks = 0;
   scriptOutput.textContent = 'The page is waiting for you.';
+  refreshTranslation();
   helloButton.focus();
 });
 window.addEventListener('load', () => {

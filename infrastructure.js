@@ -136,6 +136,10 @@ const buildReset = document.querySelector('#buildReset');
 
 let currentStage = 0;
 
+function refreshTranslation() {
+  window.NIGHTSKY_I18N?.apply(document);
+}
+
 function svgLinks(links) {
   return `<svg viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">${links
     .map((link) => `<line class="build-link ${link.className || ''}" x1="${link.x1}" y1="${link.y1}" x2="${link.x2}" y2="${link.y2}" />`)
@@ -253,6 +257,7 @@ function renderStage() {
   buildPrimary.innerHTML = isFinal ? 'Build again <span aria-hidden="true">↻</span>' : `${stage.button} <span aria-hidden="true">→</span>`;
   buildCanvas.dataset.stage = String(currentStage);
   buildIllustration.innerHTML = renderStageIllustration(currentStage);
+  refreshTranslation();
 }
 
 function resetBuild() {
@@ -268,6 +273,8 @@ stepButtons.forEach((button) => {
     renderStage();
   });
 });
+
+window.addEventListener('nightsky:languagechange', renderStage);
 
 buildPrimary.addEventListener('click', () => {
   if (currentStage === infrastructureStages.length - 1) {

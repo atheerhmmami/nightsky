@@ -2,7 +2,7 @@
 
 An interactive, narrative field guide to the infrastructure that made the Internet and the early World Wide Web possible.
 
-The project is intentionally built with plain HTML, CSS, and JavaScript so it can be hosted directly on GitHub Pages without a framework, build step, backend, or database.
+The site is Arabic-first by default, with a casual Saudi tone. The language toggle in the top bar switches the full interface to English. It is intentionally built with plain HTML, CSS, and JavaScript so it can be hosted directly on GitHub Pages without a framework, build step, backend, or database.
 
 ## What the project teaches
 
@@ -75,5 +75,6 @@ The site links to primary and foundational sources in the homepage's **Read the 
 - `infrastructure.css` — focused infrastructure-lab layout and responsive styles
 - `app.js` — homepage timeline, packet workshop, and Netscape demo interactions
 - `infrastructure.js` — infrastructure stages, build visualizer, and step navigation
+- `i18n.js` — Arabic-first language toggle and casual Saudi Arabic copy
 - `cody.css` — minimal warm-paper visual system inspired by the reference
 - `tcp.html` — legacy redirect to the infrastructure lab
