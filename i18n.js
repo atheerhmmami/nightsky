@@ -424,7 +424,7 @@ const arabicCopy = {
   'foundation complete': 'الأساس اكتمل',
   'link / physical': 'وصلة / فيزيائي',
   'the protocol rides on the house': 'البروتوكول يستضيفه البيت',
-  'standars': 'معايير',
+  standards: 'معايير',
   'human systems': 'أنظمة بشرية',
   'operations + shared rules': 'تشغيل + قواعد مشتركة',
   'service depends on care': 'الخدمة تعتمد على العناية',
